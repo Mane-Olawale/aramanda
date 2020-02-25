@@ -9,6 +9,8 @@ define( 'PUBLIC_PATH', ROOT_PATH . DS . 'public' );
 
 include ROOT_PATH . DS . 'core/vendor/autoload.php';
 
-use Aramanda\Config\Environment as Environment;
+use Aramanda\Config\Environment as Env;
 
-Environment::load_env_file(ROOT_PATH . DS . 'env.ini');
+Env::load_env_file(ROOT_PATH . DS . 'env.ini');
+
+echo Env::get('app', 'name');
