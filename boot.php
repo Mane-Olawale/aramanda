@@ -5,12 +5,18 @@
 define( 'DS', DIRECTORY_SEPARATOR );
 define( 'ROOT_PATH', dirname(__FILE__) );
 
-define( 'PUBLIC_PATH', ROOT_PATH . DS . 'public' );
+define( 'PUBLIC_PATH', $_SERVER['DOCUMENT_ROOT'] );
 
-include ROOT_PATH . DS . 'core/vendor/autoload.php';
+include ROOT_PATH . DS . 'core/init.php';
 
-use Aramanda\Config\Environment as Env;
+use Aramanda\Environment as Env;
 
-Env::load_env_file(ROOT_PATH . DS . 'env.ini');
+Env::load_env_file( ROOT_PATH . DS . 'env.ini');
+?>
+<pre>
+<?php
 
-echo Env::get('app', 'name');
+echo var_dump ( Env::get('app.name') );
+
+?>
+</pre>
