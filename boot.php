@@ -12,11 +12,5 @@ include ROOT_PATH . DS . 'core/init.php';
 use Aramanda\Environment as Env;
 
 Env::load_env_file( ROOT_PATH . DS . 'env.ini');
-?>
-<pre>
-<?php
-
-echo var_dump ( Env::get('app.name') );
 
 ?>
-</pre>
