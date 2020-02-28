@@ -1,6 +1,6 @@
 <?php
 
-namespace FastRoute;
+namespace Aramanda\Router\Collector\Implement;
 
 class RouteCollector
 {
