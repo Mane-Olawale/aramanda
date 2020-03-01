@@ -1,9 +1,9 @@
 <?php
 
-namespace Aramanda\Router\Routerfactory\Implement;
+namespace Aramanda\Router\RouterFactory\Implement;
 
-use Aramanda\Exception\InvalidRouteException;
-use Aramanda\Router\Route;
+//use Aramanda\Exception\InvalidRouteException;
+//use Aramanda\Router\Route;
 
 interface RouterFactory
 {
@@ -11,12 +11,12 @@ interface RouterFactory
     /**
      * @return int
      */
-    protected function getApproxChunkSize();
+    public function getApproxChunkSize();
 
     /**
      * @return mixed[]
      */
-    protected function processChunk($regexToRoutesMap);
+    public function processChunk($regexToRoutesMap);
 
     /**
     * @return void

@@ -1,7 +1,7 @@
 {
   "autoload": {
     "psr-4":{
-      "Aramanda\\": "aramanda/"
+      "Aramanda\\": "Aramanda/"
     }
   }
 }

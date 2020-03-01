@@ -1,15 +1,13 @@
 <?php
-namespace Aramanda\Router\Route;
+namespace Aramanda\Router\Route\Implement;
 
-//use Aramanda\Router\Route\Implement\Route as _interface;
-use Aramanda\Router\DataParser\RouteParser;
 
  /**
- * class of of individial route
+ * Interface of individial route
  *
  * @package route
  */
-class Route //implements _interface
+class Route implements _interface
 {
 	/**
 	* Route name if it is related to named route index.
@@ -25,7 +23,7 @@ class Route //implements _interface
 	* @since 1.0
 	* @var string
 	*/
-  public $httpMethod = [];
+  public $method;
 
 	/**
 	* The request method the route is to listen to.
@@ -33,7 +31,7 @@ class Route //implements _interface
 	* @since 1.0
 	* @var array
 	*/
-  public $routeDatas = [];
+  public $routeData = [];
 
 	/**
 	* The unproccessed route string.
@@ -41,7 +39,7 @@ class Route //implements _interface
 	* @since 1.0
 	* @var string
 	*/
-  public $rawRoute = null;
+  public $rawRoute;
 
 	/**
 	* The associate array containing the Regular expression constaints of the parameter.
@@ -52,12 +50,12 @@ class Route //implements _interface
   public $matches = [];
 
 	/**
-	* The associate array containing the Regular expression constaints of the parameter.
+	* The associate array containing the options of a route.
 	*
 	* @since 1.0
 	* @var array
 	*/
-  public $defaultRegex = '[\w]+';
+  public $options = [];
 
 	/**
 	* The route handler.
@@ -65,7 +63,7 @@ class Route //implements _interface
 	* @since 1.0
 	* @var string
 	*/
-  public $handler = null;
+  public $handler;
 
 	/**
 	* Namespace used by the router to instantiate your controler class, it overwrites the group namespace.
@@ -73,7 +71,7 @@ class Route //implements _interface
 	* @since 1.0
 	* @var string
 	*/
-  public $namespace = null;
+  public $namespace;
 
   /**
   * Array of middleware gets merged with the parent group.
@@ -81,7 +79,7 @@ class Route //implements _interface
   * @since 1.0
   * @var array
   */
-  public $middleWare = null;
+  public $middleWare;
 
   /**
   * Route Subdomain string.
@@ -89,7 +87,7 @@ class Route //implements _interface
   * @since 1.0
   * @var string
   */
-  public $subDomain = null;
+  public $subDomain;
 
   /**
   * Route Subdomain data.
@@ -97,7 +95,15 @@ class Route //implements _interface
   * @since 1.0
   * @var string
   */
-  public $subDomainData = null;
+  public $subDomainData;
+
+	/**
+	* This stores group name for future reference.
+	*
+	* @since 1.0
+	* @var string
+	*/
+  public $groupName;
 
 	/**
 	* This stores group name for future reference.
@@ -105,7 +111,7 @@ class Route //implements _interface
 	* @since 1.0
 	* @var object
 	*/
-  public $groupObjectStack = null;
+  public $groupObject;
 
 
   /**
@@ -113,22 +119,13 @@ class Route //implements _interface
  *
  * @since 1.0
  *
- * @param array              $httpMethod http method to subscribe to.
- * @param string               $route    Route path and regex data.
- * @param mixed               $handler      properties.
+ * @param string      $method http method to subscribe to.
+ * @param array       $routeData    Route path and regex data.
+ * @param string|object       $handler      Regular expression match array.
  */
-  function __construct(array $httpMethod, string $route, $handler)
+  function __construct(string $method, array $routeData, $handler)
   {
-    $this->setHttpMethod($httpMethod);
-
-    $this->setRoute($route);
-
-    $this->setHandler($handler);
-
-    //$this->register();
-
-    return $this;
-
+    // code...
   }
 
 
@@ -168,70 +165,7 @@ class Route //implements _interface
     */
     function name($name)
     {
-      $this->name = $name;
-
-      return $this;
-    }
-
-
-
-    /**
-    * This sets the name of a route for reuable purpose.
-    *
-    * @since 1.0
-    *
-    * @param string        $name  route name.
-    */
-    protected function setHttpMethod($httpMethod)
-    {
-      $this->httpMethod = array_values( array_unique( array_merge( $this->httpMethod, $httpMethod ) ) );
-    }
-
-
-
-    /**
-    * This sets the rawRoute string and array data of a route.
-    *
-    * @since 1.0
-    *
-    * @param string        $route  route string.
-    */
-    protected function setRoute($route)
-    {
-      $this->rawRoute = $route;
-      $this->routeDatas = RouteParser::parse($this->rawRoute, $this->defaultRegex);
-
-    }
-
-
-
-    /**
-    * This sets the rawRoute string and array data of a route.
-    *
-    * @since 1.0
-    *
-    * @param mixed        $handler  Route handler.
-    */
-    protected function setHandler($handler)
-    {
-      $this->handler = $handler;
-
-    }
-
-
-
-    /**
-    * This sets the rawRoute string and array data of a route.
-    *
-    * @since 1.0
-    *
-    * @param mixed        $options  Route options.
-    */
-    public function setOptions($options)
-    {
-
-      return $this;
-
+      // code...
     }
 
 

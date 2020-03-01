@@ -1,10 +1,10 @@
 <?php
 
-namespace Aramanda\Router\Routerfactory\Extendables;
+namespace Aramanda\Router\RouterFactory\Extendables;
 
-use Aramanda\Router\Routerfactory\Implement as _interface;
-use Aramanda\Exception\InvalidRouteException;
-use Aramanda\Router\Route;
+use Aramanda\Router\RegexFactory\Implement\RegexFactory as _interface;
+//use Aramanda\Exception\InvalidRouteException;
+//use Aramanda\Router\Route;
 
 abstract class RouterFactory implements _interface
 {
