@@ -1,7 +1,6 @@
 <?php
 
 namespace Aramanda\Router\RouteGroup;
-namespace Aramanda\Router\RouteGroup\GroupCollection;
 
 
 class GroupCollector {
@@ -16,9 +15,9 @@ class GroupCollector {
 
     public static function addGroup(string $name, string $prefix = '', array $options = []){
 
-        $group = new RouteGroup( $name, $prefix)->setOptions( $options );
+        $group = (new Group( $name, $prefix))->setOptions( $options );
 
-        GroupCollection::stack($route);
+        GroupCollection::stack($group);
 
         return $group;
     }

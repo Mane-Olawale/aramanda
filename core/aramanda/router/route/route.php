@@ -3,6 +3,8 @@ namespace Aramanda\Router\Route;
 
 //use Aramanda\Router\Route\Implement\Route as _interface;
 use Aramanda\Router\DataParser\RouteParser;
+use Aramanda\Router\RouteGroup\GroupCollection;
+
 
  /**
  * class of of individial route
@@ -81,7 +83,7 @@ class Route //implements _interface
   * @since 1.0
   * @var array
   */
-  public $middleWare = null;
+  public $middleware = [];
 
   /**
   * Route Subdomain string.
@@ -89,15 +91,15 @@ class Route //implements _interface
   * @since 1.0
   * @var string
   */
-  public $subDomain = null;
+  public $subdomain = null;
 
   /**
   * Route Subdomain data.
   *
   * @since 1.0
-  * @var string
+  * @var array
   */
-  public $subDomainData = null;
+  public $subdomainDatas = [];
 
 	/**
 	* This stores group name for future reference.
@@ -105,7 +107,15 @@ class Route //implements _interface
 	* @since 1.0
 	* @var object
 	*/
-  public $groupObjectStack = null;
+  public $groupName = null;
+
+	/**
+	* This stores group object for future reference.
+	*
+	* @since 1.0
+	* @var object
+	*/
+  public $groupObject = null;
 
 
   /**
@@ -137,25 +147,109 @@ class Route //implements _interface
    *
    * @since 1.0
    *
-   * @param string|array  $var variable name.
-   * @param string        $regex    variable regex.
+   * @param string|array  $var    variable name.
+   * @param string        $regex  variable regex.
    */
-    function where(string $var, string $regex)
+    function where($var, string $regex = '')
     {
-      // code...
+      if (is_string($var) && is_string($regex) && !empty($regex)){
+          $this->matches[$var] = $regex;
+      } else {
+
+          foreach ($var as $key => $value) {
+            $this->matches[$key] = $value;
+          }
+
+      }
+
+      $this->UpdateRouteDataRegex();
+
+      $this->UpdateSubdomainDataRegex();
+
+      return $this;
     }
 
 
     /**
-    * This this filters the $matches property for duplicated constraints
+    * This updates the regex in the route data for the coresponding constraints
     *
     * @since 1.0
     *
     */
-    function filterMatches()
+    protected function UpdateRouteDataRegex()
     {
-      // code...
+
+      if ($this->routeDatas){
+
+        foreach ($this->routeDatas as $key => $routeData) {
+
+          $segmentIndex = $key;
+
+          foreach ($routeData as $key => $part) {
+            $segmentPartIndex = $key;
+
+            if (is_array($part)){
+
+              if (!isset($this->matches[$part[0]])) {
+                continue;
+              }
+
+              $this->routeDatas[$segmentIndex][$segmentPartIndex][1] = $this->matches[$part[0]];
+
+            }else{
+              continue;
+            }
+
+          }
+
+        }
+
+      }
+
     }
+
+
+
+
+    /**
+    * This updates the regex in the subdomain data for the coresponding constraints
+    *
+    * @since 1.0
+    *
+    */
+    protected function UpdateSubdomainDataRegex()
+    {
+
+      if ($this->subdomainDatas){
+
+        foreach ($this->subdomainDatas as $key => $subdomainData) {
+
+          $segmentIndex = $key;
+
+          foreach ($subdomainData as $key => $part) {
+            $segmentPartIndex = $key;
+
+            if (is_array($part)){
+
+              if (!isset($this->matches[$part[0]])) {
+                continue;
+              }
+
+              $this->subdomainDatas[$segmentIndex][$segmentPartIndex][1] = $this->matches[$part[0]];
+
+            }else{
+              continue;
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+
 
 
 
@@ -168,7 +262,7 @@ class Route //implements _interface
     */
     function name($name)
     {
-      $this->name = $name;
+      $this->name = strtolower($name);
 
       return $this;
     }
@@ -185,6 +279,7 @@ class Route //implements _interface
     protected function setHttpMethod($httpMethod)
     {
       $this->httpMethod = array_values( array_unique( array_merge( $this->httpMethod, $httpMethod ) ) );
+      return $this;
     }
 
 
@@ -200,6 +295,7 @@ class Route //implements _interface
     {
       $this->rawRoute = $route;
       $this->routeDatas = RouteParser::parse($this->rawRoute, $this->defaultRegex);
+      return $this;
 
     }
 
@@ -215,6 +311,7 @@ class Route //implements _interface
     protected function setHandler($handler)
     {
       $this->handler = $handler;
+      return $this;
 
     }
 
@@ -236,6 +333,18 @@ class Route //implements _interface
 
 
     /**
+    * Alias of setMiddleware
+    *
+    * @since 1.0
+    *
+    */
+    public function middleware( $middleware )
+    {
+      return $this->setMiddleware( $middleware );
+    }
+
+
+    /**
     * This set the middleware for a particular route, merges with the parent
     *
     * @since 1.0
@@ -243,9 +352,41 @@ class Route //implements _interface
     * @param string|array  $middleware variable name.
     *
     */
-    function setMiddleware( $middleware )
+    protected function setMiddleware( $middleware )
     {
-      // code...
+      $this->middleware[] = $middleware;
+
+      return $this;
+    }
+
+
+
+
+    /**
+    * Alias of setMiddleware
+    *
+    * @since 1.0
+    *
+    */
+    public function namespace( $namespace )
+    {
+      return $this->setNamespace( $namespace );
+    }
+
+
+    /**
+    * This set the middleware for a particular route, merges with the parent
+    *
+    * @since 1.0
+    *
+    * @param string|array  $middleware variable name.
+    *
+    */
+    protected function setNamespace( $namespace )
+    {
+      $this->namespace = $namespace;
+
+      return $this;
     }
 
 
@@ -256,9 +397,14 @@ class Route //implements _interface
     *
     * @param string   $subDomain  domain data.
     */
-    function subDomain($subDomain)
+    function subdomain($subdomain)
     {
-      // code...
+      $this->subdomain = $subdomain;
+      $this->subdomainDatas = RouteParser::parse($this->subdomain, $this->defaultRegex);
+
+      $this->UpdateSubdomainDataRegex();
+
+      return $this;
     }
 
 
@@ -269,23 +415,23 @@ class Route //implements _interface
      *
 	   * @return array fully merged array of Regular expression constaints for a parameter.
      */
-      function getWhere(string $var, string $regex)
+      function getWhere()
       {
-        // code...
+        return $this->matches;
       }
 
 
 
       /**
-      * This gets the name of a route for reuable purpose.
+      * This gets the name of a group for reuable purpose.
       *
       * @since 1.0
       *
- 	    * @return string Name accociated with the route.
+ 	    * @return string Name accociated with the group.
       */
-      function getName()
+      public function getName()
       {
-        // code...
+        return strtolower($this->name);
       }
 
 
@@ -299,20 +445,52 @@ class Route //implements _interface
       */
       function getMiddleware()
       {
-        // code...
+        $middleware = [];
+        if (!is_null($this->groupObject) && !is_array($this->groupObject->getMiddleware())){
+          $middleware = array_merge( $this->groupObject->getMiddleware(), $middleware );
+        }
+
+        $middleware = array_merge( $middleware, $this->middleware );
+        return $middleware;
       }
 
 
       /**
-      * This gets the domain regex and generates domain data, if route dont have inherit from group
+      * This gets the prefix for a particular route, merges with the parent
       *
       * @since 1.0
       *
- 	    * @return string subdomain pattern.
+ 	    * @return string prefix accociated with the group.
+      *
       */
-      function getSubDomain()
+      public function getPrefix()
       {
-        // code...
+        $prefix = '';
+        if (!is_null($this->groupName)){
+          $prefix =  $this->groupObject->getPrefix();
+        }
+        return $prefix;
+      }
+
+
+
+
+
+      /**
+      * This gets the domain regex , if group dont have inherit from parent group
+      *
+      * @since 1.0
+      *
+      * @return string subdomain pattern.
+      */
+      public function getSubdomain()
+      {
+
+        if (is_null($this->subdomain)){
+          return $this->groupObject->getSubdomain();
+        }
+
+        return $this->subdomain;
       }
 
 
@@ -323,7 +501,7 @@ class Route //implements _interface
       *
  	    * @return string subdomain pattern data.
       */
-      function getSubDomainData()
+      function getSubdomainData()
       {
         // code...
       }
@@ -354,6 +532,45 @@ class Route //implements _interface
         // code...
       }
 
+
+
+
+
+
+      /**
+      * Alias of setGroup
+      *
+      * @since 1.0
+      *
+      */
+      public function group( string $name )
+      {
+        return $this->setGroup( $name );
+      }
+
+
+      /**
+      * This gets the instance of a group from the $groupStack
+      *
+      * @since 1.0
+      *
+      * @param string  $name group name.
+      *
+      */
+      protected function setGroup( string $name )
+      {
+
+        $group = GroupCollection::get($name);
+
+        if ($group === false){
+          die("Group not found");
+        }
+
+        $this->groupName = $group->getName();
+        $this->groupObject = $group;
+
+        return $this;
+      }
 
 
 

@@ -193,7 +193,7 @@ class Router {
     */
     public static function any( $route, $handler, $option = []){
 
-      $route = static::addRoute( RouterCollector::ACCEPTED_HTTP_METHODS, $route, $handler, $option);
+      $route = static::addRoute( RouteCollector::ACCEPTED_HTTP_METHODS, $route, $handler, $option);
 
       return $route;
 
