@@ -102,8 +102,6 @@ class Group
 
     $this->setOptions( $options );
 
-    //$this->register();
-
     return $this;
 
   }
@@ -316,11 +314,11 @@ class Group
  	    * @return array Name accociated with the route.
       *
       */
-      function getMiddleware()
+      public function getMiddleware()
       {
         $middleware = [];
-        if (!is_null($this->groupObject) && !is_array($this->groupObject->getMiddleware())){
-          $middleware = array_merge( $this->groupObject->getMiddleware(), $middleware );
+        if (!is_null($this->getGroupObject()) && is_array($this->getGroupObject()->getMiddleware())){
+          $middleware = array_merge( $this->getGroupObject()->getMiddleware(), $middleware );
         }
 
         $middleware = array_merge( $middleware, $this->middleware );
@@ -347,22 +345,47 @@ class Group
           $prefix = '';
         }
 
-        $prefix = $prefix . $this->prefix;
+        $prefix = $prefix . trim( $this->prefix, "$");
+
         return $prefix;
       }
+
+
+      /**
+      * This gets the namespace for a particular route, if set overrides the parent
+      *
+      * @since 1.0
+      *
+ 	    * @return string prefix accociated with the group.
+      *
+      */
+      public function getNamespace()
+      {
+        $namespace = '';
+
+        if (!is_null($this->getGroupObject())) $namespace = $this->getGroupObject()->getNamespace();
+
+        if (!is_null($this->namespace)) $namespace =  $this->namespace;
+
+        return $namespace;
+      }
+
+
+
+
 
       /**
       * This gets the domain regex , if group dont have inherit from parent group
       *
       * @since 1.0
       *
- 	    * @return string subdomain pattern.
+      * @return string subdomain pattern.
       */
       public function getSubdomain()
       {
 
-        if (is_null($this->subdomain)){
-          return $this->groupObject->getSubdomain();
+        if (is_null($this->subdomain) && !is_null($this->getGroupObject()) ){
+          return $this->getGroupObject()->getSubdomain();
         }
 
         return $this->subdomain;

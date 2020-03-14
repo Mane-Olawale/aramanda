@@ -4,6 +4,8 @@ namespace Aramanda\Router;
 
 use Aramanda\Router\RouteCollector\RouteCollector;
 use Aramanda\Router\RouteGroup\GroupCollector;
+use Aramanda\Router\Dispatcher\Dispatcher;
+use Aramanda\Router\Url\RouteUrl;
 
 class Router {
 
@@ -217,6 +219,45 @@ class Router {
       return $route;
 
     }
+
+
+
+
+    /**
+    * Dispatcher function
+    *
+    *
+    * @param string $name
+    * @param string  $prefix
+    * @param array  $options
+    */
+    public static function dispatch(string $httpMethod, string $path, string $hostName = null){
+
+      return Dispatcher::dispatch( $httpMethod, $path, $hostName );
+
+
+    }
+
+
+
+
+    /**
+    * Build Url
+    *
+    * @param string $routeName
+    * @param array  $parameters
+    */
+    public static function url(string $routeName, array $parameters){
+
+      return RouteUrl::url( $routeName, $parameters);
+
+
+    }
+
+
+
+
+
 
 
 
